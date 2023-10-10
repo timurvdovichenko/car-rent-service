@@ -26,14 +26,16 @@ export default function CardItem({ data }) {
     mileage,
     accessories,
     rentalPrice,
+    favorite,
   } = data;
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  console.log('favorite :>> ', favorite);
   return (
     <Wrapper>
       <WrapperImage>
-        <FavoriteIcon id={id} />
+        <FavoriteIcon id={id} favoriteStatus={favorite} />
         <Image src={img} alt="Car" />
       </WrapperImage>
       <WrapperTitle>

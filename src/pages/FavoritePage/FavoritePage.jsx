@@ -9,14 +9,13 @@ import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 function FavoritePage() {
-  const { data, error, isLoading, isFetching } = useGetCarsByPageQuery(1);
   const [catalog, setCatalog] = useState([]); // Стейт для хранения всех карточек
   const [page, setPage] = useState(1);
   const dispatch = useDispatch();
   const loadMore = () => {
     setPage(page + 1);
   };
-
+  const { data, error, isLoading, isFetching } = useGetCarsByPageQuery(page);
   useEffect(() => {
     if (data) {
       setCatalog(prevCatalog => [...prevCatalog, ...data]);

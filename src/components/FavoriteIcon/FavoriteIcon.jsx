@@ -7,7 +7,7 @@ import { addToFavorites, removeFromFavorites } from 'redux/catalogSlice';
 import { useDispatch } from 'react-redux';
 import { operations } from 'redux/operations';
 
-export default function FavoriteIcon({ id }) {
+export default function FavoriteIcon({ id, favoriteStatus }) {
   // console.log('id :>> ', id);
   // const favorites = useSelector(selectFavorites);
 
@@ -20,8 +20,6 @@ export default function FavoriteIcon({ id }) {
   const StylesFavoriteBorder = styled(FavoriteBorder)({
     fill: '#FFFFFFCC',
   });
-
-  dispatch(operations.getByID(id));
 
   const handleChange = e => {
     if (e.target.checked) {
@@ -41,7 +39,7 @@ export default function FavoriteIcon({ id }) {
         icon={<StylesFavoriteBorder />}
         checkedIcon={<StylesFavorite />}
         onChange={handleChange}
-        checked={true}
+        checked={favoriteStatus}
       />
     </div>
   );

@@ -9,7 +9,7 @@ const Catalog = lazy(() => import('pages/CatalogPage/CatalogPage'));
 const Favorites = lazy(() => import('pages/FavoritePage/FavoritePage'));
 
 function App() {
-  useGetCarsByPageQuery(1);
+  // useGetCarsByPageQuery(1);
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
