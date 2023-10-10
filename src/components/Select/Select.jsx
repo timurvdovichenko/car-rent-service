@@ -14,7 +14,7 @@ import {
 
 import Buttons from 'components/Buttons/Buttons';
 import { useGetCarsByPageQuery } from 'redux/operations';
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 
 export default function SelectForm() {
   const { data } = useGetCarsByPageQuery(1);
