@@ -1,31 +1,57 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'https://64a7c1d3dca581464b84b87f.mockapi.io';
+axios.defaults.baseURL = 'https://65254b4767cfb1e59ce7092b.mockapi.io/api';
+axios.defaults.responseEncoding = 'utf8';
 
-export const fetchContacts = createAsyncThunk('contacts/fetchAll', async (_, thunkAPI) => {
+export const api = createApi({
+  reducerPath: 'api',
+  baseQuery: fetchBaseQuery({
+    baseUrl: 'https://65254b4767cfb1e59ce7092b.mockapi.io/api',
+  }),
+  endpoints: builder => ({
+    getCarsByPage: builder.query({
+      query: (page = 1) => `adverts?page=${page}&limit=8`,
+    }),
+  }),
+});
+
+const getByID = createAsyncThunk('catalog/byID', async (data, thunkAPI) => {
   try {
-    const response = await axios.get('/contacts');
-    return response.data;
-  } catch (e) {
-    return thunkAPI.rejectWithValue(e.message);
+    const id = data;
+    const response = await axios.get(`adverts/${id}`);
+    console.log('response :>> ', response.data);
+    // return response.data;
+  } catch (error) {
+    console.log('error :>> ', error);
+    return thunkAPI.rejectWithValue(error.message);
   }
 });
 
-export const deleteContact = createAsyncThunk('contacts/deleteContact', async (id, thunkAPI) => {
+const updateFavoriteStatus = createAsyncThunk('catalog/updateFavorite', async (data, thunkAPI) => {
   try {
-    const response = await axios.delete(`/contacts/${id}`);
+    const { id, favoriteStatus } = data;
+    const response = await axios.put(`adverts/${id}`, favoriteStatus);
+
     return response.data;
-  } catch (e) {
-    return thunkAPI.rejectWithValue(e.message);
+  } catch (error) {
+    console.log('error :>> ', error);
+    return thunkAPI.rejectWithValue(error.message);
   }
 });
 
-export const addContact = createAsyncThunk('contacts/addContact', async (contact, thunkAPI) => {
+const getFavorites = createAsyncThunk('catalog/updateByID', async (data, thunkAPI) => {
   try {
-    const response = await axios.post(`/contacts`, contact);
+    const favoriteStatus = data;
+    const response = await axios.get(`adverts?favorite=${favoriteStatus}`);
+
     return response.data;
-  } catch (e) {
-    return thunkAPI.rejectWithValue(e.message);
+  } catch (error) {
+    console.log('error :>> ', error);
+    return thunkAPI.rejectWithValue(error.message);
   }
 });
+
+export const { useGetCarsByPageQuery } = api;
+export const operations = { getByID, updateFavoriteStatus, getFavorites };
