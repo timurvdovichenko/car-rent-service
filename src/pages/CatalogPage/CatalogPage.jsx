@@ -9,10 +9,12 @@ import { Loader } from 'components/Loader/Loader';
 import { Wrapper, WrapperSelect } from './CatalogPage.styled';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  selectBrandCatalogBoolean,
   selectCatalog,
   selectIsErrorCatalog,
   selectIsFetchingCatalog,
   selectIsloadingCatalog,
+  selectPriceCatalogBoolean,
 } from 'redux/selectors';
 
 function CatalogPage() {
@@ -22,6 +24,13 @@ function CatalogPage() {
 
   const data = useSelector(selectCatalog);
 
+  const selectBrand = useSelector(selectBrandCatalogBoolean);
+  const selectPrice = useSelector(selectPriceCatalogBoolean);
+
+  // const dataSort = useSelector(selectSortOrFilter);
+  // console.log('dataSort :>> ', dataSort);
+  console.log('data :>> ', data);
+
   const error = useSelector(selectIsErrorCatalog);
   const isLoading = useSelector(selectIsloadingCatalog);
   const isFetching = useSelector(selectIsFetchingCatalog);
@@ -30,23 +39,25 @@ function CatalogPage() {
     setPage(page + 1);
   };
   useEffect(() => {
-    dispatch(operations.getAllWithPagination(page));
+    dispatch(operations.getDataWithPagination({ page: `page=${page}` }));
   }, [dispatch, page]);
 
   useEffect(() => {
-    if (data) {
-      setCatalog(prevState => {
-        const dirtyArray = [...prevState, ...data];
-        const uniqueObjArray = [...new Map(dirtyArray.map(item => [item['id'], item])).values()];
-        return uniqueObjArray;
-      });
+    if (selectBrand || selectPrice) {
+      setCatalog(data);
+
+      return;
     }
-  }, [data]);
+    setCatalog(prevState => {
+      const dirtyArray = [...prevState, ...data];
+      const uniqueObjArray = [...new Map(dirtyArray.map(item => [item['id'], item])).values()];
+      return uniqueObjArray;
+    });
+  }, [data, selectBrand, selectPrice]);
 
   return (
     <>
       <WrapperSelect>
-        {console.log('catalog', catalog)}
         <SelectForm />
       </WrapperSelect>
       <Wrapper>

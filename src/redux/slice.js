@@ -6,9 +6,17 @@ const initialState = {
   isLoading: false,
   isFetching: false,
   error: false,
+  selectBrand: false,
+  selectPrice: false,
 };
 const initialStateFavorites = {
   favorites: [],
+  isLoading: false,
+  isFetching: false,
+  error: false,
+};
+const initialStateBrands = {
+  brands: [],
   isLoading: false,
   isFetching: false,
   error: false,
@@ -18,33 +26,32 @@ const catalogSlice = createSlice({
   name: 'catalog',
   initialState,
   reducers: {
-    setCatalog: (state, action) => {
-      state.catalog = action.payload;
+    setSelectBrand: (state, action) => {
+      state.selectBrand = action.payload;
     },
-    addToFavorites: (state, action) => {
-      state.favorites.push(action.payload);
-    },
-    removeFromFavorites: (state, action) => {
-      state.favorites = state.favorites.filter(item => item.id !== action.payload.id);
+    setSelectPrice: (state, action) => {
+      state.selectPrice = action.payload;
     },
   },
+
   extraReducers: {
-    [operations.getAllWithPagination.pending](state) {
+    [operations.getDataWithPagination.pending](state) {
       state.isLoading = true;
       state.isFetching = true;
     },
-    [operations.getAllWithPagination.rejected](state) {
+    [operations.getDataWithPagination.rejected](state) {
       state.isLoading = false;
       state.isFetching = false;
       state.error = true;
     },
-    [operations.getAllWithPagination.fulfilled](state, action) {
+    [operations.getDataWithPagination.fulfilled](state, action) {
       state.isLoading = false;
       state.isFetching = false;
 
-      const dirtyArray = [...state.catalog, ...action.payload];
-      const uniqueObjArray = [...new Map(dirtyArray.map(item => [item['id'], item])).values()];
-      state.catalog = uniqueObjArray;
+      // const dirtyArray = [...state.catalog, ...action.payload];
+      // const uniqueObjArray = [...new Map(dirtyArray.map(item => [item['id'], item])).values()];
+      // state.catalog = uniqueObjArray;
+      state.catalog = action.payload;
       state.error = false;
     },
   },
@@ -53,17 +60,6 @@ const catalogSlice = createSlice({
 const favoriteSlice = createSlice({
   name: 'favorite',
   initialState: initialStateFavorites,
-  // reducers: {
-  //   setFavorites: (state, action) => {
-  //     state.catalog = action.payload;
-  //   },
-  //   addToFavorites: (state, action) => {
-  //     state.favorites.push(action.payload);
-  //   },
-  //   removeFromFavorites: (state, action) => {
-  //     state.favorites = state.favorites.filter(item => item.id !== action.payload.id);
-  //   },
-  // },
   extraReducers: {
     [operations.getFavorites.pending](state) {
       state.isLoading = true;
@@ -83,17 +79,40 @@ const favoriteSlice = createSlice({
   },
 });
 
+const brandsSlice = createSlice({
+  name: 'brands',
+  initialState: initialStateBrands,
+  extraReducers: {
+    [operations.getSortCarByBrands.pending](state) {
+      state.isLoading = true;
+      state.isFetching = true;
+    },
+    [operations.getSortCarByBrands.rejected](state) {
+      state.isLoading = false;
+      state.isFetching = false;
+      state.error = true;
+    },
+    [operations.getSortCarByBrands.fulfilled](state, action) {
+      state.isLoading = false;
+      state.isFetching = false;
+      const dirtyArray = action.payload.map(item => item.make);
+      const cleanArray = dirtyArray.filter((item, index, array) => array.indexOf(item) === index);
+      state.brands = cleanArray;
+      state.error = false;
+    },
+  },
+});
+
 const catalogReducer = catalogSlice.reducer;
-
 const favoritesReducer = favoriteSlice.reducer;
+const brandsReducer = brandsSlice.reducer;
 
-export const { setCatalog, addToFavorites, removeFromFavorites } = catalogSlice.actions;
-
-// export default catalogReducer;
+export const { setSelectBrand, setSelectPrice } = catalogSlice.actions;
 
 const reducers = combineReducers({
   catalog: catalogReducer,
   favorites: favoritesReducer,
+  brands: brandsReducer,
 });
 
 export default reducers;

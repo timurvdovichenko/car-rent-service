@@ -47,7 +47,6 @@ function FavoritePage() {
       <WrapperSelect>
         <SelectForm />
       </WrapperSelect>
-      {console.log('favorites', favorites)}
       <Wrapper>
         {error ? (
           <>Oops, there was an error...</>

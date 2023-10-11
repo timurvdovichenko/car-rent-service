@@ -13,12 +13,45 @@ import {
 } from './Select.styled';
 
 import Buttons from 'components/Buttons/Buttons';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectBrands } from 'redux/selectors';
+import { useEffect, useState } from 'react';
+import { operations } from 'redux/operations';
+import { setSelectBrand, setSelectPrice } from 'redux/slice';
 
 export default function SelectForm() {
-  const data = [];
+  const brands = useSelector(selectBrands);
+  const [brand, setBrand] = useState(null);
+  const [price, setPrice] = useState(null);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(operations.getSortCarByBrands());
+  }, [dispatch]);
 
-  const makeOptionsDirty = data.map(car => ({ value: car.make, label: car.make }));
-  const makeOptions = [...new Map(makeOptionsDirty.map(item => [item['value'], item])).values()];
+  useEffect(() => {
+    if (brand && !price) {
+      dispatch(operations.getDataWithPagination({ action: `&make=${brand}` }));
+      dispatch(setSelectBrand(true));
+      return;
+    }
+
+    if (price && !brand) {
+      dispatch(operations.getDataWithPagination({ action: `&rentalPrice=${price}` }));
+      dispatch(setSelectPrice(true));
+    }
+    // if (price && brand) {
+    //   dispatch(
+    //     operations.getDataWithPagination({
+    //       action: `make=${brand}`,
+    //       priceFilter: `${price}`,
+    //     }),
+    //   );
+    //   dispatch(setSelectBrand(true));
+    //   dispatch(setSelectPrice(true));
+    // }
+  }, [brand, dispatch, price]);
+
+  const makeOptions = brands.map(car => ({ value: car, label: car }));
 
   const prices = ['10', '20', '30', '40', '50', '60', '70', '80', '90', '100'];
 
@@ -74,6 +107,7 @@ export default function SelectForm() {
           components={{
             IndicatorSeparator: () => null,
           }}
+          onChange={choice => setBrand(choice.value)}
         />
       </SelectContainer>
 
@@ -127,6 +161,7 @@ export default function SelectForm() {
           components={{
             IndicatorSeparator: () => null,
           }}
+          onChange={choice => setPrice(choice.value)}
         />
       </SelectContainer>
 
