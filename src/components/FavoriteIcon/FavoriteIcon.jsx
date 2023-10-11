@@ -3,13 +3,12 @@ import Checkbox from '@mui/material/Checkbox';
 import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
 import Favorite from '@mui/icons-material/Favorite';
 import { styled } from '@mui/material/styles';
-import { addToFavorites, removeFromFavorites } from 'redux/catalogSlice';
 import { useDispatch } from 'react-redux';
 import { operations } from 'redux/operations';
+import { useState } from 'react';
 
 export default function FavoriteIcon({ id, favoriteStatus }) {
-  // console.log('id :>> ', id);
-  // const favorites = useSelector(selectFavorites);
+  const [favorite, setFavorite] = useState(favoriteStatus);
 
   const dispatch = useDispatch();
 
@@ -23,11 +22,10 @@ export default function FavoriteIcon({ id, favoriteStatus }) {
 
   const handleChange = e => {
     if (e.target.checked) {
-      dispatch(addToFavorites(id));
-
+      setFavorite(true);
       dispatch(operations.updateFavoriteStatus({ favoriteStatus: { favorite: true }, id }));
     } else {
-      dispatch(removeFromFavorites(id));
+      setFavorite(false);
       dispatch(operations.updateFavoriteStatus({ favoriteStatus: { favorite: false }, id }));
     }
   };
@@ -39,7 +37,7 @@ export default function FavoriteIcon({ id, favoriteStatus }) {
         icon={<StylesFavoriteBorder />}
         checkedIcon={<StylesFavorite />}
         onChange={handleChange}
-        checked={favoriteStatus}
+        checked={favorite}
       />
     </div>
   );

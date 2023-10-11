@@ -17,7 +17,8 @@ import { useGetCarsByPageQuery } from 'redux/operations';
 // import { useEffect } from 'react';
 
 export default function SelectForm() {
-  const { data } = useGetCarsByPageQuery(1);
+  // const { data } = useGetCarsByPageQuery(1);
+  const data = [];
 
   const makeOptionsDirty = data.map(car => ({ value: car.make, label: car.make }));
   const makeOptions = [...new Map(makeOptionsDirty.map(item => [item['value'], item])).values()];

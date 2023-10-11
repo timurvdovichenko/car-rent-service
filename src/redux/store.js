@@ -1,4 +1,4 @@
-import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import storage from 'redux-persist/lib/storage';
 import {
   persistStore,
@@ -11,13 +11,14 @@ import {
   REGISTER,
 } from 'redux-persist';
 
-import catalogReducer from './catalogSlice';
-import { api } from './operations';
+// import catalogReducer from './catalogSlice';
+// import { api } from './operations';
+import reducers from './slice';
 
-const reducers = combineReducers({
-  catalog: catalogReducer,
-  [api.reducerPath]: api.reducer,
-});
+// const reducers = combineReducers({
+//   catalog: catalogReducer,
+//   // [api.reducerPath]: api.reducer,
+// });
 
 const persistConfig = {
   key: 'root',
@@ -34,7 +35,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(api.middleware),
+    }),
 });
 
 export let persistor = persistStore(store);

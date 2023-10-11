@@ -13,7 +13,6 @@ import {
 import { useState } from 'react';
 
 export default function CardItem({ data }) {
-  // console.log('data :>> ', data);
   const {
     id,
     img,
@@ -31,7 +30,7 @@ export default function CardItem({ data }) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  console.log('favorite :>> ', favorite);
+
   return (
     <Wrapper>
       <WrapperImage>
